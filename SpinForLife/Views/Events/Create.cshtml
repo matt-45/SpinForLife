@@ -1,0 +1,99 @@
+﻿@using SpinForLife.Models
+@model Event
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create Event</h2>
+
+
+@using (Html.BeginForm("Create", "Events", FormMethod.Post, new { id = "createEventForm" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("intervals", null, new { id = "hiddenIntervals"})
+<div class="form-horizontal">
+    <h4>Be sure to fill all fields.</h4>
+    <hr />
+    <div class="form-group">
+        <label class="control-label col-md-6">How many intervals?</label>
+        <div class="col-md-10">
+            <input id="intervalsInput" type="number" class="text-center form-control col-md-3">
+        </div>
+    </div>
+    <div id="intervalsDiv" class="form-group" style="padding-left: 3%"></div>
+
+    <div class="form-group">
+        @Html.Label("Number of open bikes", htmlAttributes: new { @class = "control-label col-md-6" })
+        <div class="col-md-10">
+            @Html.Editor("openBikes", new { htmlAttributes = new { @class = "form-control", @type = "number"} })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Rows, htmlAttributes: new { @class = "control-label col-md-6" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Rows, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Rows, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Columns, htmlAttributes: new { @class = "control-label col-md-6" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Columns, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Columns, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <a onclick="submitCreateEvent()" class="btn btn-success" style="color: white">Submit</a>
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+
+    <script>
+        function submitCreateEvent() {
+            var numberOfIntervals = $("#intervalsInput").val();
+            var array = new Array();
+            console.log(numberOfIntervals)
+            for (var i = 0; i < numberOfIntervals; i++) {
+                var idOne = "#startHour" + i;
+                var idTwo = "#endHour" + i;
+                var startHour = $(idOne).val();
+                var endHour = $(idTwo).val();
+                var string = `${startHour} - ${endHour}`;
+                array.push(string);
+            }
+            $("#hiddenIntervals").val(array);
+            $("#createEventForm").submit();
+        }
+        $(document).ready(function () {
+            $("#intervalsInput").change(function () {
+                var value = this.value;
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("SetIntervals", "Events")",
+                    data: {
+                        "intervals": value
+                    },
+                    success: function (partialViewResult) {
+                        $("#intervalsDiv").html(partialViewResult);
+                        $(".timePicker").timepicker();
+                    }
+                });
+            })
+
+            
+        });
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+}

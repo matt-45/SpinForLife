@@ -1,0 +1,166 @@
+﻿@using SpinForLife.Models
+@model HomeViewModel
+@{
+    var letters = new string[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
+}
+
+@if (Model.Grid != null)
+{
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-10">
+                    <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 300%">Not on a team?</h1>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Info boxes -->
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-3">
+
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+
+
+            <div>
+                <div class="row">
+                    @*<div class="col">
+            <div class="info-box bg-red" style="text-align: center">
+                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">7-8 AM <br />FULL</span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="info-box" style="text-align: center">
+                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">8-9 AM <br />10/60 Slots</span>
+            </div>
+            <button class="btn btn-success" style="width: 100%">Join</button>
+        </div>
+
+        <div class="col">
+            <div class="info-box" style="text-align: center">
+                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">9-10 AM <br />20/60 Slots</span>
+            </div>
+            <button class="btn btn-success" style="width: 100%">Join</button>
+        </div>
+        <div class="col">
+            <div class="info-box" style="text-align: center">
+                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">10-11 AM <br />13/60 Slots</span>
+            </div>
+            <button class="btn btn-success" style="width: 100%">Join</button>
+        </div>*@
+
+                    @foreach (var item in Model.Event.OpenBikeSections)
+                    {
+                        <div class="col" style="max-width: 20%; min-width: 20%; padding-bottom: 2%">
+                            <div class="info-box" style="text-align: center">
+                                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">@item.Interval <br />@item.OpenSlots/@item.NumberOfSlots Slots</span>
+                            </div>
+                            <button class="btn btn-success" style="width: 100%">Join</button>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div><!--/. container-fluid -->
+    </section>
+    <!-- /.content -->
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 300%">Select your team</h1>
+                </div><!-- /.col -->
+                @*<div class="col-sm-3">
+                        <div class="info-box">
+                            <span class="info-box-icon bg-orange elevation-1"><i class="fas fa-exclamation"></i></span>
+                            <div class="info-box-content">
+                                <span class="info-box-text">Don't see your team?</span>
+                                <span class="info-box-number">
+                                    Click here
+                                </span>
+                            </div>
+                             /.info-box-content
+                        </div>
+                    </div> /.col
+                    <div class="col-sm-3">
+                        <a href=@Url.Action("OpenBikes", "Home") style="color: black">
+                            <div class="info-box">
+                                <span class="info-box-icon bg-green elevation-1"><i class="fas fa-user"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Don't have a team?</span>
+                                    <span class="info-box-number">
+                                        Click here
+                                    </span>
+                                </div>
+                                 /.info-box-content
+                            </div>
+                        </a>
+                    </div> /.col*@
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Info boxes -->
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+
+
+            <div>
+                
+                @for (int i = Model.Grid.Count() - 1; i > 0; i--)
+                {
+                    <div class="row">
+                        @for (int x = 1; x < Model.Grid[i - 1].Count(); x++)
+                        {
+                            <div class="col">
+                                <div class="info-box" style="text-align: center">
+                                    <span class="info-box-number" style="text-align: center; width: 100%; margin-top: 10%">
+                                        <i class="fa fa-biking"></i>
+                                        <br />
+                                        @if (Model.Grid[i - 1][x - 1] != null)
+                                        {
+                                            @Model.Grid[i - 1][x - 1].HasTeam
+                                        }
+                                        else
+                                        {
+                                            @: No team
+                                        }
+                                        @*@letters[i - 1]  x @x*@
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+
+            </div>
+
+
+        </div>
+    </section>
+    <!-- /.content -->
+}
+else
+{
+    <h1 style="font-size: 300%; text-align: center; padding-top: 5%"><a href=@Url.Action("Index", "Events")>Enable</a> or <a href=@Url.Action("Create", "Events")>Create</a> an Event to get started.</h1>
+
+}
