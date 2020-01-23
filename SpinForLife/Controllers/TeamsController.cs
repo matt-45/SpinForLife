@@ -48,17 +48,23 @@ namespace SpinForLife.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name")] Team team)
+        public ActionResult Create(string teamName, int? reservedBikeId)
         {
-            if (ModelState.IsValid)
-            {
-                db.Teams.Add(team);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            var team = new Team();
+            
+            team.Name = teamName;
+            
 
-            ViewBag.Id = new SelectList(db.ReservedBikes, "Id", "Id", team.Id);
-            return View(team);
+            db.Teams.Add(team);
+            db.SaveChanges();
+
+            if (reservedBikeId != null)
+            {
+                var reservedBike = db.ReservedBikes.Find(reservedBikeId);
+                reservedBike.AddTeam(team);
+                db.SaveChanges();
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         // GET: Teams/Edit/5

@@ -6,13 +6,18 @@
 
 @if (Model.Grid != null)
 {
+
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-10">
                     <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 300%">Not on a team?</h1>
+                    <h4 class="m-0 text-dark">Select from one of the times below.</h4>
                 </div><!-- /.col -->
+                <div class="col-sm-2">
+                    <img src="~/Images/Spin4LifeLogo.jpeg" style="width: 50%; height: auto" />
+                </div>
             </div><!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -33,41 +38,48 @@
 
             <div>
                 <div class="row">
-                    @*<div class="col">
-            <div class="info-box bg-red" style="text-align: center">
-                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">7-8 AM <br />FULL</span>
-            </div>
-        </div>
-        <div class="col">
-            <div class="info-box" style="text-align: center">
-                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">8-9 AM <br />10/60 Slots</span>
-            </div>
-            <button class="btn btn-success" style="width: 100%">Join</button>
-        </div>
-
-        <div class="col">
-            <div class="info-box" style="text-align: center">
-                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">9-10 AM <br />20/60 Slots</span>
-            </div>
-            <button class="btn btn-success" style="width: 100%">Join</button>
-        </div>
-        <div class="col">
-            <div class="info-box" style="text-align: center">
-                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">10-11 AM <br />13/60 Slots</span>
-            </div>
-            <button class="btn btn-success" style="width: 100%">Join</button>
-        </div>*@
-
                     @foreach (var item in Model.Event.OpenBikeSections)
                     {
-                        <div class="col" style="max-width: 20%; min-width: 20%; padding-bottom: 2%">
-                            <div class="info-box" style="text-align: center">
-                                <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">@item.Interval <br />@item.OpenSlots/@item.NumberOfSlots Slots</span>
+                        if (item.OpenSlots <= 0)
+                        {
+                            <div class="col" style="max-width: 20%; min-width: 20%; padding-bottom: 2%">
+                                <div class="info-box bg-red" style="text-align: center">
+                                    <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">@item.Interval <br />FULL</span>
+                                </div>
+                                @if (Model.User != null)
+                                {
+                                    if (Model.User.OpenBikeSections.Contains(item))
+                                    {
+                                        <a href=@Url.Action("LeaveOpenSection", "Home", new { id = item.Id }) class="btn btn-danger" style="width: 100%">Leave</a>
+                                    }
+                                }
                             </div>
-                            <button class="btn btn-success" style="width: 100%">Join</button>
-                        </div>
-                    }
 
+                        }
+                        else
+                        {
+                            <div class="col" style="max-width: 20%; min-width: 20%; padding-bottom: 2%">
+                                <div class="info-box" style="text-align: center">
+                                    <span class="info-box-number" style="text-align: center; width: 100%; font-size: 175%">@item.Interval <br />@item.OpenSlots/@item.NumberOfSlots Slots</span>
+                                </div>
+                                @if (Model.User != null)
+                                {
+                                    if (Model.User.OpenBikeSections.Contains(item))
+                                    {
+                                        <a href=@Url.Action("LeaveOpenSection", "Home", new { id = item.Id }) class="btn btn-danger" style="width: 100%">Leave</a>
+                                    }
+                                    else
+                                    {
+                                        <a href=@Url.Action("JoinOpenSection", "Home", new { id = item.Id }) class="btn btn-success" style="width: 100%">Join</a>
+                                    }
+                                }
+                                else
+                                {
+                                    <a href=@Url.Action("Login", "Account") class="btn btn-success" style="width: 100%">Join</a>
+                                }
+                            </div>
+                        }
+                    }
                 </div>
             </div>
         </div><!--/. container-fluid -->
@@ -78,7 +90,8 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 300%">Select your team</h1>
+                    <h1 class="m-0 text-dark" style="font-weight: bold; font-size: 300%">Spinning with a team?</h1>
+                    <h4 class="m-0 text-dark">Select your team below.</h4>
                 </div><!-- /.col -->
                 @*<div class="col-sm-3">
                         <div class="info-box">
@@ -124,31 +137,75 @@
 
 
             <div>
-                
-                @for (int i = Model.Grid.Count() - 1; i > 0; i--)
+
+                @for (int i = Model.Grid.Count() - 1; i >= 0; i--)
                 {
-                    <div class="row">
-                        @for (int x = 1; x < Model.Grid[i - 1].Count(); x++)
+                <div class="row">
+                    @for (int x = 0; x < Model.Grid[i].Count(); x++)
                         {
+                            if (Model.UserIsAdmin)
+                            {
+                                var reservedBikeId = Model.Grid[i][x].Id;
+                                var onclickString = $"setHiddenReservedId({reservedBikeId})";
                             <div class="col">
-                                <div class="info-box" style="text-align: center">
-                                    <span class="info-box-number" style="text-align: center; width: 100%; margin-top: 10%">
-                                        <i class="fa fa-biking"></i>
-                                        <br />
-                                        @if (Model.Grid[i - 1][x - 1] != null)
-                                        {
-                                            @Model.Grid[i - 1][x - 1].HasTeam
-                                        }
-                                        else
-                                        {
-                                            @: No team
-                                        }
-                                        @*@letters[i - 1]  x @x*@
-                                    </span>
-                                </div>
+                                <a data-target="#reservedBikeModal" data-toggle="modal" href="#" style="color: black" onclick=@onclickString>
+                                    <div class="info-box" style="text-align: center">
+                                        <span class="info-box-number" style="text-align: center; width: 100%; margin-top: 10%; font-size: 125%">
+                                            @*<i class="fa fa-biking"></i>*@
+                                            <img src="~/Images/Spin4LifeBikeNew.png" style="width: 100%; height: auto" />
+                                            <br />
+                                            @if (Model.Grid[i][x].Team != null)
+                                            {
+                                                @Model.Grid[i][x].Team.Name
+                                            }
+                                            else
+                                            {
+                                                @: No team
+                                            }
+                                            @*@letters[i - 1]  x @x*@
+                                        </span>
+                                    </div>
+                                </a>
                             </div>
+                            
                         }
-                    </div>
+                        else
+                        {
+                            if (Model.Grid[i][x].Team != null)
+                            {
+                                
+                                <div class="col">
+                                    <a href=@Url.Action("Details", "Teams", new { id = Model.Grid[i][x].Team.Id } )  style="color: black">
+                                        <div class="info-box" style="text-align: center">
+                                            <span class="info-box-number" style="text-align: center; width: 100%; margin-top: 10%; font-size: 125%">
+                                                @*<i class="fa fa-biking"></i>*@
+                                                <img src="~/Images/Spin4LifeBikeNew.png" style="width: 100%; height: auto" />
+                                                <br />
+                                                @Model.Grid[i][x].Team.Name
+                                            </span>
+                                        </div>
+                                    </a>
+                                </div>
+                                
+                            }
+                            else
+                            {
+                                <div class="col">
+                                    <div class="info-box" style="text-align: center">
+                                        <span class="info-box-number" style="text-align: center; width: 100%; margin-top: 10%; font-size: 125%">
+                                            @*<i class="fa fa-biking"></i>*@
+                                            <img src="~/Images/Spin4LifeBikeNew.png" style="width: 100%; height: auto" />
+                                            <br />
+                                            No team
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+
+                        }
+
+                    }
+                </div>
                 }
 
 
@@ -161,6 +218,76 @@
 }
 else
 {
-    <h1 style="font-size: 300%; text-align: center; padding-top: 5%"><a href=@Url.Action("Index", "Events")>Enable</a> or <a href=@Url.Action("Create", "Events")>Create</a> an Event to get started.</h1>
+    <h1 style="font-size: 300%; text-align: center; padding-top: 5%"><a href=@Url.Action("Create", "Events")>Create</a> an Event to get started.</h1>
+}
+
+<!-- The Modal -->
+<div class="modal fade" id="reservedBikeModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h2 class="modal-title" style="font-weight: bold">Select a team to assign them to a bike.</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <table id="teamsTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>Team Name</th>
+                            <th>Is Assigned</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var team in Model.AllTeams)
+                        {
+                        <tr>
+                            <td>@team.Name</td>
+                            @if (Model.Event.Teams.Contains(team))
+                            {
+                                <td>Yes</td>
+                            }
+                            else
+                            {
+                                <td>No</td>
+                            }
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger mr-auto" data-dismiss="modal">Close</button>
+                <button class="btn btn-warning">View Bike</button>
+                <a class="btn btn-success" href="#" data-toggle="modal" data-target="#createTeamModal">Create Team</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+
+    <script>
+
+        $(document).ready(function () {
+            $("#teamsTable").DataTable();
+        });
+
+        function setHiddenReservedId(id) {
+            $("#hiddenReservedBikeId").val(id);
+        }
+
+
+    </script>
+
+
+
 
 }

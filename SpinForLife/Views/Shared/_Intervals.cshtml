@@ -4,6 +4,7 @@
 {
     var input1 = "startHour" + i;
     var input2 = "endHour" + i;
+    var previousId = "endHour" + (i - 1);
     var label = "Interval " + (i + 1);
     <div class="row">
         <div class="col">
@@ -13,7 +14,7 @@
     <div class="row" style="padding-bottom: 1%">
         <div class="col-3">
             <h7 class="control-label">Start Hour</h7>
-            <input id=@input1 class="timePicker text-center form-control"/>
+            <input id=@input1 class="timePicker text-center form-control" onclick="setNewValue(@input1, @previousId)"/>
         </div>
         <div class="col-3">
             <h7 class="control-label">End Hour</h7>
@@ -21,4 +22,3 @@
         </div>
     </div>
 }
-

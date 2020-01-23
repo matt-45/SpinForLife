@@ -25,6 +25,15 @@ namespace SpinForLife.Models
 
         public virtual ICollection<OpenBikeSection> OpenBikeSections { get; set; }
         public virtual ICollection<ReservedBike> ReservedBikes { get; set; }
+
+        [NotMapped]
+        public List<Team> Teams
+        {
+            get
+            {
+                return ReservedBikes.Where(b => b.HasTeam).Select(b => b.Team).ToList();
+            }
+        }
         
         [NotMapped]
         public List<string> Intervals
@@ -41,10 +50,10 @@ namespace SpinForLife.Models
             get
             {
                 var grid = new List<List<ReservedBike>>();
-                for (int i = 0; i <= this.Rows; i++)
+                for (int i = 0; i < this.Rows; i++)
                 {
                     var row = new List<ReservedBike>();
-                    for (int x = 0; x <= this.Columns; x++)
+                    for (int x = 0; x < this.Columns; x++)
                     {
                         row.Add(this.ReservedBikes.Where(b => b.Row == i).FirstOrDefault(b => b.Column == x));
                     }

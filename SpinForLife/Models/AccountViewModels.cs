@@ -64,6 +64,19 @@ namespace SpinForLife.Models
 
     public class RegisterViewModel
     {
+
+        [Display(Name = "First Name")]
+        [StringLength(50, MinimumLength = 1, ErrorMessage = "First Name must be between 1 and 50 characters")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Last Name")]
+        [StringLength(50, MinimumLength = 1, ErrorMessage = "Last Name must be between 1 and 50 characters")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Display(Name = "Phone Number")]
+        public string PhoneNumber { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

@@ -1,5 +1,8 @@
 namespace SpinForLife.Migrations
 {
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using SpinForLife.Models;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -12,12 +15,38 @@ namespace SpinForLife.Migrations
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(SpinForLife.Models.ApplicationDbContext context)
+        protected override void Seed(ApplicationDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data.
+            if (!context.Roles.Any(r => r.Name == "Admin"))
+            {
+                roleManager.Create(new IdentityRole { Name = "Admin" });
+            }
+            if (!context.Roles.Any(r => r.Name == "User"))
+            {
+                roleManager.Create(new IdentityRole { Name = "Manager" });
+            }
+
+            // user creation
+
+            var userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+
+            if (!context.Users.Any(u => u.Email == "mattpark102@outlook.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "mattpark102@outlook.com",
+                    Email = "mattpark102@outlook.com",
+                    FirstName = "Matthew",
+                    LastName = "Park"
+                }, "Eggegg12!");
+            }
+
+            // assign admin role
+
+            var adminId = userManager.FindByEmail("mattpark102@outlook.com").Id;
+            userManager.AddToRole(adminId, "Admin");
         }
     }
 }

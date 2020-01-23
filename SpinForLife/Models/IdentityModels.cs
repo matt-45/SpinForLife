@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Security.Claims;
@@ -25,11 +27,15 @@ namespace SpinForLife.Models
             } 
         }
 
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
         public virtual Team Team { get; set; }
 
-        public int OpenBikeSectionId { get; set; }
-        public virtual OpenBikeSection OpenBikeSection { get; set; }
+        public virtual ICollection<OpenBikeSection> OpenBikeSections { get; set; }
+
+        public ApplicationUser()
+        {
+            OpenBikeSections = new HashSet<OpenBikeSection>();
+        }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -59,4 +65,5 @@ namespace SpinForLife.Models
         public DbSet<Event> Events { get; set; }
 
     }
+
 }

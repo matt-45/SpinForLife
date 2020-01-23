@@ -71,6 +71,21 @@ namespace SpinForLife.Controllers
                     db.OpenBikeSections.Add(openBikeSection);
                     db.SaveChanges();
                 }
+                for (int i = 0; i < newEvent.Rows; i++)
+                {
+                    for (int x = 0; x < newEvent.Columns; x++)
+                    {
+                        var reservedBike = new ReservedBike
+                        {
+                            Column = x,
+                            Row = i,
+                            HasTeam = false,
+                            EventId = newEvent.Id
+                        };
+                        db.ReservedBikes.Add(reservedBike);
+                        db.SaveChanges();
+                    }
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index", "Home");
             }
